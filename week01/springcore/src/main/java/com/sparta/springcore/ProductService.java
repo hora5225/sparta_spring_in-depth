@@ -1,18 +1,17 @@
 package com.sparta.springcore;
 
-import java.sql.*;
-import java.util.ArrayList;
+import org.springframework.stereotype.Component;
+
+import java.sql.SQLException;
 import java.util.List;
 
+@Component  // 빈 사용을 위한 어노테이션
 public class ProductService {
 
     private final ProductRepository productRepository;
-    public ProductService() {
-        ProductRepository productRepository = new ProductRepository();  //  사용을 위해 객체 생성
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
         //  혹은 위의 두줄을 this.productRepository = new ProductRepository; 한줄로 대체 가능
-
-
     }
 
     public Product createProduct(ProductRequestDto requestDto) throws SQLException {

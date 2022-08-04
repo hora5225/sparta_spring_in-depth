@@ -6,11 +6,18 @@ import java.util.List;
 
 public class ProductRepository {
 
-
+    private final String dbUrl;
+    private final String dbId;
+    private final String dbPassword;
+    public ProductRepository(String dbUrl, String dbId, String dbPassword) {
+        this.dbUrl = dbUrl;
+        this.dbId = dbId;
+        this.dbPassword = dbPassword;
+    }
 
     public void createProduct(Product product) throws SQLException {
         // DB 연결
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:springcoredb", "sa", "");
+        Connection connection = getConnection(dbUrl, dbId, dbPassword);
 
         // DB Query 작성
         PreparedStatement ps = connection.prepareStatement("select max(id) as id from product");
@@ -37,10 +44,12 @@ public class ProductRepository {
         connection.close();
     }
 
+
+
     public Product getProduct(Long id) throws SQLException {
         Product product = new Product();
         // DB 연결
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:springcoredb", "sa", "");
+        Connection connection = getConnection(dbUrl, dbId, dbPassword);
 
         // DB Query 작성
         PreparedStatement ps = connection.prepareStatement("select * from product where id = ?");
@@ -69,7 +78,7 @@ public class ProductRepository {
 
 
         // DB 연결
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:springcoredb", "sa", "");
+        Connection connection = getConnection(dbUrl, dbId, dbPassword);
         // DB Query 작성
         PreparedStatement ps = connection.prepareStatement("update product set myprice = ? where id = ?");
         ps.setInt(1, myprice);
@@ -87,7 +96,7 @@ public class ProductRepository {
 
         List<Product> products = new ArrayList<>();
         // DB 연결
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:springcoredb", "sa", "");
+        Connection connection = getConnection("jdbc:h2:mem:springcoredb", "sa", "");
 
         // DB Query 작성 및 실행
         Statement stmt = connection.createStatement();
@@ -112,4 +121,10 @@ public class ProductRepository {
         return products;
 
     }
+
+    //중복 코드의 메서드화  리팩터링-> 메서드 추출
+    private Connection getConnection(String dbUrl, String dbId, String dbPassword) throws SQLException {
+        return DriverManager.getConnection(dbUrl, dbId, dbPassword);
+    }
+
 }
